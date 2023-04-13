@@ -6,35 +6,33 @@ import Models.OBJ;
 import Models.bomb;
 import Models.numbers;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!\n");
-
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        int[] nums = new int[]{1,2,3,4,5,6};
+        int[] nums = new int[]{1,2,3,4,5};
         System.out.println(Exercises.getTotal(2,4));
         System.out.println(Exercises.getTotal(nums));
 
         char[] chars = new char[]{'A','B','C','D','E'};
 
-        char[][] board = new char[][]
+        char[][] board4 = new char[][]
                 {
-                 {'1','2','3','4','5','6'}
-                ,{'1','2','3','4','5','6'}
-                ,{'1','2','3','4','5','6'}
-                ,{'1','2','3','4','5','6'}};
-        char[] chars1 = new char[]{'A','B','C','D'};
+                 {'1','2','3','4','5'}
+                ,{'1','2','3','4','5'}
+                ,{'1','2','3','4','5'}
+                ,{'1','2','3','4','5'}};
+        char[] chars1 = new char[]{'1','2','3','4','5','6','7','8','9'};
         int i = 0;
 
+        var board = setDisplayBoard();
 
 
-        setBoard();
-//        printBoard(board,chars1,i,nums);
+        var board1  = setBoard();
+        printBoard(board,chars1,i,nums);
 
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
         System.out.println("What is your selection: ");
@@ -42,64 +40,79 @@ public class Main {
         String Selection = myObj.nextLine();  // Read user input
         String[] SplitInput = Selection.split("");
         int row = 0;
-        try{
-            switch(SplitInput[0]) {
-                case "A":
-                    row = 1;
+        var Continue = true;
+        while(true) {
+            try {
+                switch (SplitInput[0]) {
+                    case "A" -> row = 0;
+                    case "B" -> row = 1;
+                    case "C" -> row = 2;
+                    case "D" -> row = 3;
+                }
+                if(OBJ.getTotalObs() == 0){
+                    System.out.println("You Have won!!!!");
+                }
+
+                if(board1[row][Integer.parseInt(SplitInput[1]) ] instanceof bomb) {
+                    System.out.println("Game Over");
                     break;
-                case "B":
-                    row = 2;
+                }
+                else{
+                    board[row][Integer.parseInt(SplitInput[1]) -1] = '?';
+                    printBoard(board, chars1, i, nums);
+                    OBJ.removeOBJ();
+                }
+
+                System.out.println("Do you want to continue: ");
+                Continue = Objects.equals(myObj.nextLine(), "y");
+                if(!Continue)
                     break;
-                case "C":
-                    row = 3;
-                    break;
-                case "D":
-                    row = 4;
-                    break;
+                printBoard(board, chars1, i, nums);
+                System.out.println("What is your selection: ");
+                Selection = myObj.nextLine();  // Read user input
+                SplitInput = Selection.split("");
+
+
+            } catch (Exception e) {
+
             }
-            int chosenCo = board[row][Integer.parseInt(SplitInput[1])];
-            System.out.println(chosenCo);
-            board[row][Integer.parseInt(SplitInput[1])] = '?';
-            printBoard(board,chars1,i,nums);
-        }catch (Exception e){
 
         }
+    }
 
-
+    static char[][] setDisplayBoard(){
+        char board[][] = new char[9][5];
+        for (int i = 0; i < 9; i++) {
+            Arrays.fill(board[i], '?');
+        }
+        return board;
     }
 
 
-    static void setBoard(){
+
+    static OBJ[][] setBoard() {
         Random rand = new Random();
-        int BombNum = rand.nextInt(5);
-        OBJ board[][] = new OBJ[4][5];
+        int BombNum = rand.nextInt(2);
+        OBJ board[][] = new OBJ[9][5];
+        char[] chars1 = new char[]{'A', 'B', 'C', 'D'};
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 5; j++) {
+                int r = rand.nextInt(10);
+                if (r % 2 == 0) {
 
-        for (int i = 0; i < 4 ; i++) {
-            for (int j = 0; j < 5 ; j++) {
-                System.out.println("s");
-
-                int r = rand.nextInt(5);
-                if(r == 4){
                     board[i][j] = new bomb();
-                }else{
+
+                    r--;
+                } else {
                     board[i][j] = new numbers();
+                    OBJ.setTotalObs();
                 }
-            }
-        }
-        for (var m: board) {
-            for (var l: m) {
-                System.out.print("|");
-                OBJ ll = null;
-                if (l instanceof bomb){
-                    ll = (bomb)l;
-                }else{
-                    ll = (numbers)l;
-                }
-            }
-        }
 
+            }
+
+        }
+        return board;
     }
-
 
    static void printBoard(char[][] board,char[] nums1,int i,int[] nums){
        System.out.print(" ");
@@ -109,9 +122,9 @@ public class Main {
            System.out.print(" ");
        }
        System.out.println("");
-        for (var m:board) {
+        for (var m: board) {
             System.out.print(nums1[i]);
-            for (var l:m) {
+            for (var l: m) {
                 System.out.print("|");
                 System.out.print(l);
             }

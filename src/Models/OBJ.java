@@ -12,8 +12,14 @@ public abstract class OBJ {
         return totalObs;
     }
 
-    public static  void setTotalObs() {
+    public static void setTotalObs() {
         totalObs++;
+    }
+
+
+
+    public static void removeOBJ(){
+        totalObs --;
     }
 
     abstract boolean Hit();
