@@ -3,6 +3,7 @@ public class Exercises {
     static public int getTotal(int num1, int num2){
         return num1 + num2;
     }
+    //this is a comment
 
     static public int getTotal(int[] nums){
         int total = 0;
